@@ -1,4 +1,4 @@
-import type { MenuItem } from '../../../types/Layout/Menu/MenuItem';
+import type { MenuItem } from '../../../types/layout/menu/MenuItem';
 
 interface MenuProps {
   menuItems: MenuItem[];
@@ -14,7 +14,10 @@ export default function Menu({ menuItems }: MenuProps) {
           <a
             key={item.label}
             href={item.href}
-            className="block cursor-pointer hover:bg-gray-600 p-2 rounded transition-colors"
+            className={
+              'block cursor-pointer hover:bg-gray-600 p-2 rounded transition-colors ' +
+              item.active
+            }
           >
             {item.label}
           </a>

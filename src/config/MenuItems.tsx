@@ -1,4 +1,4 @@
-import type { MenuItem } from '../types/Layout/Menu/MenuItem';
+import type { MenuItem } from '../types/layout/menu/MenuItem';
 
 export const menuItems: MenuItem[] = [
   { label: 'Dashboard', href: '/dashboard' },
