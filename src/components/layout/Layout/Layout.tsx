@@ -2,7 +2,7 @@ import Menu from '../Menu';
 import Header from '../Header';
 import SubNav from '../SubNav';
 import Content from '../Content';
-import { menuItems } from '../../../config/MenuItems'
+import { menuItems } from '../../../config/MenuItems';
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -10,23 +10,21 @@ interface LayoutProps {
   showSubNavigation?: boolean;
 }
 
-const Layout = ({ 
-  children, 
+const Layout = ({
+  children,
   headerTitle,
-  showSubNavigation = true 
+  showSubNavigation = true,
 }: LayoutProps) => {
   return (
     <div className="h-screen flex">
-      <Menu menuItems={menuItems}/>
-      
+      <Menu menuItems={menuItems} />
+
       <div className="flex-1 flex flex-col">
-        <Header title={headerTitle}/>
-        
-        { showSubNavigation && ( <SubNav section="Fil d'arianne"/> )}
-        
-        <Content title='content title'>
-          {children}
-        </Content>
+        <Header title={headerTitle} />
+
+        {showSubNavigation && <SubNav section="Fil d'arianne" />}
+
+        <Content title="content title">{children}</Content>
       </div>
     </div>
   );

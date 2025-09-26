@@ -1,14 +1,16 @@
-import type { MenuItem } from '../../../types/Layout/Menu/MenuItem'
+import type { MenuItem } from '../../../types/Layout/Menu/MenuItem';
 
 interface MenuProps {
   menuItems: MenuItem[];
 }
 
-export default function Menu ({menuItems}: MenuProps) {
+export default function Menu({ menuItems }: MenuProps) {
   return (
-    <aside className={`bg-gray-800 text-white border-r-gray-600 border-r p-4 w-48 h-full`}>
+    <aside
+      className={`bg-gray-800 text-white border-r-gray-600 border-r p-4 w-48 h-full`}
+    >
       <nav className="space-y-2">
-        {menuItems.map((item) => (
+        {menuItems.map(item => (
           <a
             key={item.label}
             href={item.href}
@@ -19,5 +21,5 @@ export default function Menu ({menuItems}: MenuProps) {
         ))}
       </nav>
     </aside>
-  )
+  );
 }

@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+build/
+
+# Generated files
+*.d.ts
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+
+# Static assets that should not be formatted
+public/
+*.min.js
+*.min.css
