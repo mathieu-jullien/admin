@@ -3,6 +3,7 @@ import Header from '../Header';
 import SubNav from '../SubNav';
 import Content from '../Content';
 import { menuItems } from '../../../config/MenuItems';
+import List from '../../../pages/Experience/List';
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -24,7 +25,9 @@ const Layout = ({
 
         {showSubNavigation && <SubNav section="Fil d'arianne" />}
 
-        <Content title="content title">{children}</Content>
+        <Content title="content title">
+          <List></List>
+        </Content>
       </div>
     </div>
   );
