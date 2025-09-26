@@ -1,18 +1,23 @@
-import React from 'react'
-import './menu.css'
+import type { MenuItem } from '../../../types/Layout/Menu/MenuItem'
 
-const Menu = () => {
-  return (
-    <div id="nav">
-      <ul>
-        <li>Dashboard</li>
-        <li>Expériences</li>
-        <li>Formations</li>
-        <li>Projets</li>
-        <li>Contact</li>
-        </ul>
-    </div>
-  )
+interface MenuProps {
+  menuItems: MenuItem[];
 }
 
-export default Menu
+export default function Menu ({menuItems}: MenuProps) {
+  return (
+    <aside className={`bg-gray-800 text-white border-r-gray-600 border-r p-4 w-48 h-full`}>
+      <nav className="space-y-2">
+        {menuItems.map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className="block cursor-pointer hover:bg-gray-600 p-2 rounded transition-colors"
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </aside>
+  )
+}

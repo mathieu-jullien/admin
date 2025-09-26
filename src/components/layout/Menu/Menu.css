@@ -1,9 +1,0 @@
-#nav {
-  display: flex;
-  justify-content: left;
-  align-items: left;
-  background-color: red;
-  padding: 1rem;
-  width: 10%;
-  height: 100vh;
-}

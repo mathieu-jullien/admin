@@ -1,18 +1,10 @@
-import React from 'react'
-import './Header.css'
-
-const Header = () => {
+interface HeaderProps {
+  title: string;
+}
+export default function Header ({title}: HeaderProps){
   return (
-    <header>
-      <ul>
-        <li>Dashboard</li>
-        <li>Expériences</li>
-        <li>Formations</li>
-        <li>Projets</li>
-        <li>Contact</li>
-      </ul>
+    <header className={`bg-gray-800 text-white border-b-2 border-gray-600 p-4 h-16 flex items-center justify-center`}>
+      <h1 className="text-lg font-semibold">{title}</h1>
     </header>
   )
 }
-
-export default Header
