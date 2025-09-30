@@ -75,7 +75,7 @@ export default function List() {
         title="Liste des expériences"
         pagination
         pageSize={1}
-        onRowClick={(experience) => handleEdit(experience.id)}
+        onRowClick={experience => handleEdit(experience.id)}
       />
     </div>
   );

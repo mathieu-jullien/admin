@@ -9,9 +9,9 @@ export default function Menu({ menuItems }: MenuProps) {
   const location = useLocation();
 
   const isActiveRoute = (href: string) => {
-    if(href === '/') return location.pathname === href;
+    if (href === '/') return location.pathname === href;
     return location.pathname.startsWith(href);
-  }
+  };
 
   return (
     <aside

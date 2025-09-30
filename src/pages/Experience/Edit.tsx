@@ -1,5 +1,4 @@
-import { useParams, useLocation } from
-'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 export default function Edit() {
   const { id } = useParams();
   const location = useLocation();
