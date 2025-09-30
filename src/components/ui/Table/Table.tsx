@@ -103,14 +103,14 @@ export default function Table<T = Record<string, unknown>>({
   }
 
   return (
-    <div className="w-full mr-2">
+    <div className="">
       {title && (
         <div className="bg-gray-800 text-white border-b-2 border-gray-600 p-4 h-16 flex items-center justify-center">
           <h2 className="text-lg font-semibold">{title}</h2>
         </div>
       )}
 
-      <div className="overflow-x-auto">
+      <div className="">
         <table
           className={`min-w-full bg-white border border-gray-200 ${className}`}
         >
@@ -167,7 +167,7 @@ export default function Table<T = Record<string, unknown>>({
                   {columns.map(column => (
                     <td
                       key={String(column.key)}
-                      className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${column.className || ''}`}
+                      className={`px-6 py-4 text-sm text-gray-900 ${column.className || ''}`}
                     >
                       {column.render
                         ? column.render(row[column.key], row, rowIndex)
