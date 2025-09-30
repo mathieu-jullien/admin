@@ -8,6 +8,11 @@ interface MenuProps {
 export default function Menu({ menuItems }: MenuProps) {
   const location = useLocation();
 
+  const isActiveRoute = (href: string) => {
+    if(href === '/') return location.pathname === href;
+    return location.pathname.startsWith(href);
+  }
+
   return (
     <aside
       className={`bg-gray-800 text-white border-r-gray-600 border-r p-4 w-48 h-full`}
@@ -18,7 +23,7 @@ export default function Menu({ menuItems }: MenuProps) {
             key={item.label}
             to={item.href}
             className={`flex justify-between cursor-pointer hover:bg-gray-600 p-2 rounded transition-colors ${
-              location.pathname === item.href ? 'bg-gray-600' : ''
+              isActiveRoute(item.href) ? 'bg-gray-600' : ''
             }`}
           >
             {item.label}
