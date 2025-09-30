@@ -1,21 +1,19 @@
+import { Outlet } from 'react-router-dom';
 import Menu from '../Menu';
 import Header from '../Header';
 import SubNav from '../SubNav';
 import Content from '../Content';
 import { menuItems } from '../../../config/MenuItems';
-import List from '../../../pages/Experience/List';
 
 interface LayoutProps {
-  children?: React.ReactNode;
   headerTitle: string;
   showSubNavigation?: boolean;
 }
 
-const Layout = ({
-  children,
-  headerTitle,
-  showSubNavigation = true,
-}: LayoutProps) => {
+export default function Layout({
+  headerTitle = 'Mon super titre',
+  showSubNavigation = false,
+}: LayoutProps) {
   return (
     <div className="h-screen flex">
       <Menu menuItems={menuItems} />
@@ -26,11 +24,9 @@ const Layout = ({
         {showSubNavigation && <SubNav section="Fil d'arianne" />}
 
         <Content title="content title">
-          <List></List>
+          <Outlet />
         </Content>
       </div>
     </div>
   );
-};
-
-export default Layout;
+}

@@ -1,8 +1,6 @@
-import React from 'react';
-import Layout from './components/layout/Layout';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './router';
 
-function App() {
-  return <Layout headerTitle="Administration Mathieu Homeland"></Layout>;
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;
