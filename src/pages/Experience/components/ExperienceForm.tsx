@@ -109,40 +109,40 @@ export default function ExperienceForm({
         </div>
 
         {/* Entreprise */}
-        <div  className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Entreprise *
-          </label>
-          <input
-            type="text"
-            value={formData.company}
-            onChange={e => handleChange('company', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.company ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="Ex: Google"
-            disabled={isLoading}
-          />
-          {errors.company && (
-            <p className="mt-1 text-sm text-red-600">{errors.company}</p>
-          )}
-        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Entreprise *
+            </label>
+            <input
+              type="text"
+              value={formData.company}
+              onChange={e => handleChange('company', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.company ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="Ex: Google"
+              disabled={isLoading}
+            />
+            {errors.company && (
+              <p className="mt-1 text-sm text-red-600">{errors.company}</p>
+            )}
+          </div>
 
-        {/* Lieu */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Lieu
-          </label>
-          <input
-            type="text"
-            value={formData.location}
-            onChange={e => handleChange('location', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Ex: Paris"
-            disabled={isLoading}
-          />
-        </div>
+          {/* Lieu */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Lieu
+            </label>
+            <input
+              type="text"
+              value={formData.location}
+              onChange={e => handleChange('location', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Ex: Paris"
+              disabled={isLoading}
+            />
+          </div>
         </div>
 
         {/* Description */}

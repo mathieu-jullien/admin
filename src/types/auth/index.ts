@@ -10,7 +10,6 @@ export interface LoginCredentials {
   password: string;
 }
 
-
 export interface LoginResponse {
   token: string;
   user?: User;

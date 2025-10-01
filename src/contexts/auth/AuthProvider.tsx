@@ -1,23 +1,20 @@
-import { createContext, useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import type {
   AuthContextValue,
   LoginCredentials,
   User,
-} from '../types/auth';
+} from '../../types/auth';
 import {
   getToken,
   saveToken,
   deleteToken,
   decodeToken,
   isTokenValid,
-} from '../utils/token';
-import { apiClient } from '../services/api/client';
-import { endpoints } from '../services/api/endpoints';
-import type { LoginResponse } from '../types/auth';
-
-export const AuthContext = createContext<AuthContextValue | undefined>(
-  undefined
-);
+} from '../../utils/token';
+import { apiClient } from '../../services/api/client';
+import { endpoints } from '../../services/api/endpoints';
+import type { LoginResponse } from '../../types/auth';
+import { AuthContext } from './AuthContext';
 
 interface AuthProviderProps {
   children: ReactNode;

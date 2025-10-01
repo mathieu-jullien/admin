@@ -2,9 +2,7 @@ import { apiClient } from '../api/client';
 import { endpoints } from '../api/endpoints';
 import type { LoginCredentials, LoginResponse } from '../../types/auth';
 
-
 export const authService = {
-
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     return await apiClient.post<LoginResponse>(
       endpoints.auth.login(),

@@ -34,7 +34,7 @@ export default function Login() {
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (error) setError(''); 
+    if (error) setError('');
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-amber-50">

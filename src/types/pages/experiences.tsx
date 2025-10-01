@@ -36,10 +36,7 @@ export const experienceColumns: TableColumn<Experience>[] = [
     key: 'description',
     header: 'Description',
     sortable: true,
-    render: (value: string) => (
-      <span className="line-clamp-2">{value}</span>
-
-    ),
+    render: (value: string) => <span className="line-clamp-2">{value}</span>,
   },
   {
     key: 'skills',
