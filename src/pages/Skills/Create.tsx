@@ -56,7 +56,6 @@ export default function Create() {
         </div>
       </div>
 
-      {/* Contenu principal */}
       <div className="py-8">
         <div className="max-w-2xl mx-auto">
           {error && (

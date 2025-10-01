@@ -16,7 +16,7 @@ export default function Edit() {
   useEffect(() => {
     const loadSkill = async () => {
       if (!id) {
-        setError('ID de compÈtence manquant');
+        setError('ID de comp√©tence manquant');
         setLoading(false);
         return;
       }
@@ -35,12 +35,12 @@ export default function Edit() {
       } catch (err) {
         if (err instanceof ApiException) {
           if (err.status === 404) {
-            setError('CompÈtence non trouvÈe');
+            setError('Comp√©tence non trouv√©e');
           } else {
             setError(err.message);
           }
         } else {
-          setError('Erreur lors du chargement de la compÈtence');
+          setError('Erreur lors du chargement de la comp√©tence');
         }
         console.error('Erreur:', err);
       } finally {
@@ -68,9 +68,9 @@ export default function Edit() {
       if (err instanceof ApiException) {
         setError(err.message);
       } else {
-        setError('Erreur lors de la mise ‡ jour');
+        setError('Erreur lors de la mise ÔøΩ jour');
       }
-      console.error('Erreur lors de la mise ‡ jour:', err);
+      console.error('Erreur lors de la mise ÔøΩ jour:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -96,13 +96,13 @@ export default function Edit() {
       <div className="min-h-screen bg-gray-50 p-4">
         <div className="max-w-2xl mx-auto">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-            {error || 'CompÈtence non trouvÈe'}
+            {error || 'Comp√©tence non trouv√©e'}
           </div>
           <button
             onClick={handleCancel}
             className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
           >
-            ê Retour ‡ la liste
+            ‚Üê Retour √† la liste
           </button>
         </div>
       </div>
@@ -111,27 +111,25 @@ export default function Edit() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      {/* En-tÍte */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-900">
-                Modifier la compÈtence
+                Modifier la comp√©tence
               </h1>
               <button
                 onClick={handleCancel}
                 className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
                 disabled={isSubmitting}
               >
-                ê Retour ‡ la liste
+                ‚Üê Retour √† la liste
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Contenu principal */}
       <div className="py-8">
         <div className="max-w-2xl mx-auto">
           {error && (
@@ -143,10 +141,10 @@ export default function Edit() {
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">
-                Informations de la compÈtence
+                Informations de la comp√©tence
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Modifiez les informations de la compÈtence.
+                Modifiez les informations de la comp√©tence.
               </p>
             </div>
 
