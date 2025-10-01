@@ -27,8 +27,6 @@ export default function ExperienceForm({
     skills: initialData?.skills || [],
   });
 
-  console.log(formData.skills)
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {

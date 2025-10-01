@@ -24,6 +24,9 @@ const buildQueryString = (params: ListParams = {}): string => {
 };
 
 export const endpoints = {
+  auth: {
+    login: () => `/auth`,
+  },
   experiences: {
     list: (params?: ListParams) => `/experiences${buildQueryString(params)}`,
     get: (id: number) => `/experiences/${id}`,

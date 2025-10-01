@@ -4,11 +4,18 @@ import Home from '../pages/Home/Home';
 import ExperienceList from '../pages/Experience/List';
 import ExperienceCreate from '../pages/Experience/Create';
 import ExperienceEdit from '../pages/Experience/Edit';
+import Login from '../pages/Auth/Login';
+import NotFound from '../pages/Error/NotFound';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout headerTitle="" />,
+    element: (
+      <ProtectedRoute>
+        <Layout headerTitle="" />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -32,5 +39,13 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '/auth',
+    element: <Login />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);

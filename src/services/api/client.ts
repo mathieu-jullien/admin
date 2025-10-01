@@ -1,14 +1,17 @@
 import { apiConfig } from '../../config/api';
 import { ApiException } from '../../types/api/errors';
 import type { RequestConfig } from './types';
+import { getToken } from '../../utils/token';
 
 class ApiClient {
   private baseURL: string;
+  private apiURL: string;
   private timeout: number;
   private defaultHeaders: Record<string, string>;
 
   constructor() {
     this.baseURL = apiConfig.baseURL;
+    this.apiURL = apiConfig.apiURL;
     this.timeout = apiConfig.timeout;
     this.defaultHeaders = apiConfig.headers;
   }
@@ -21,13 +24,27 @@ class ApiClient {
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
     try {
-      const url = `${this.baseURL}${endpoint}`;
+      // Determine URL based on endpoint
+      const url =
+        endpoint === '/auth'
+          ? `${this.baseURL}${endpoint}`
+          : `${this.apiURL}${endpoint}`;
+
+      // Get token and add to headers if available
+      const token = getToken();
+      const headers: Record<string, string> = {
+        ...this.defaultHeaders,
+        ...config.headers,
+      };
+
+      // Add Authorization header for all requests except /auth (login)
+      if (token && endpoint !== '/auth') {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         ...config,
-        headers: {
-          ...this.defaultHeaders,
-          ...config.headers,
-        },
+        headers,
         signal: config.signal || controller.signal,
       });
 
@@ -37,6 +54,22 @@ class ApiClient {
         const errorData = await response.json().catch(() => ({
           message: response.statusText,
         }));
+
+        // Handle 401 Unauthorized - redirect to login
+        if (response.status === 401) {
+          // Clear invalid token
+          const { deleteToken } = await import('../../utils/token');
+          deleteToken();
+
+          // Redirect to login page
+          window.location.href = '/auth';
+
+          throw new ApiException({
+            message: 'Session expirée. Veuillez vous reconnecter.',
+            status: 401,
+            code: 'UNAUTHORIZED',
+          });
+        }
 
         throw new ApiException({
           message: errorData.message || 'Une erreur est survenue',
