@@ -5,6 +5,7 @@ import { educationColumns } from '../../types/pages/education';
 import type { Education } from '../../types/pages/education';
 import { educationService } from '../../services/education';
 import { ApiException } from '../../types/api/errors';
+import { showSuccess, showError } from '../../utils/toast';
 
 export default function List() {
   const navigate = useNavigate();
@@ -52,8 +53,36 @@ export default function List() {
     navigate('/formations/create');
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/formations/${id}/edit`);
+  const handleEdit = (education: Education) => {
+    navigate(`/formations/${education.id}/edit`);
+  };
+
+  const handleDelete = async (education: Education) => {
+    try {
+      await educationService.delete(education.id);
+      showSuccess(
+        `La formation "${education.name}" a été supprimée avec succès`
+      );
+
+      // Reload educations list
+      const controller = new AbortController();
+      const response = await educationService.getAll(
+        {
+          page: currentPage,
+          limit: pageSize,
+        },
+        controller.signal
+      );
+      setEducations(response.member);
+    } catch (err) {
+      if (err instanceof ApiException) {
+        showError(err.message);
+      } else {
+        showError('Erreur lors de la suppression de la formation');
+      }
+      console.error('Erreur:', err);
+      throw err;
+    }
   };
 
   if (error) {
@@ -80,8 +109,16 @@ export default function List() {
         title="Liste des formations"
         pagination
         pageSize={pageSize}
-        onRowClick={education => handleEdit(education.id)}
         loading={loading}
+        actions={{
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+          editLabel: 'Éditer',
+          deleteLabel: 'Supprimer',
+          deleteConfirmTitle: 'Supprimer la formation',
+          deleteConfirmMessage: education =>
+            `Êtes-vous sûr de vouloir supprimer la formation "${education.name}" ?`,
+        }}
       />
     </div>
   );

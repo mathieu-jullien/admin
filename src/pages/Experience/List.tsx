@@ -5,6 +5,7 @@ import { experienceColumns } from '../../types/pages/experiences.tsx';
 import type { Experience } from '../../types/pages/experiences.tsx';
 import { experienceService } from '../../services/experiences';
 import { ApiException } from '../../types/api/errors';
+import { showSuccess, showError } from '../../utils/toast';
 
 export default function List() {
   const navigate = useNavigate();
@@ -52,8 +53,36 @@ export default function List() {
     navigate('/experiences/create');
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/experiences/${id}/edit`);
+  const handleEdit = (experience: Experience) => {
+    navigate(`/experiences/${experience.id}/edit`);
+  };
+
+  const handleDelete = async (experience: Experience) => {
+    try {
+      await experienceService.delete(experience.id);
+      showSuccess(
+        `L'expérience "${experience.name}" a été supprimée avec succès`
+      );
+
+      // Reload experiences list
+      const controller = new AbortController();
+      const response = await experienceService.getAll(
+        {
+          page: currentPage,
+          limit: pageSize,
+        },
+        controller.signal
+      );
+      setExperiences(response.member);
+    } catch (err) {
+      if (err instanceof ApiException) {
+        showError(err.message);
+      } else {
+        showError("Erreur lors de la suppression de l'expérience");
+      }
+      console.error('Erreur:', err);
+      throw err; // Re-throw to let Table component handle loading state
+    }
   };
 
   if (error) {
@@ -80,8 +109,16 @@ export default function List() {
         title="Liste des expériences"
         pagination
         pageSize={pageSize}
-        onRowClick={experience => handleEdit(experience.id)}
         loading={loading}
+        actions={{
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+          editLabel: 'Éditer',
+          deleteLabel: 'Supprimer',
+          deleteConfirmTitle: "Supprimer l'expérience",
+          deleteConfirmMessage: exp =>
+            `Êtes-vous sûr de vouloir supprimer l'expérience "${exp.name}" ?`,
+        }}
       />
     </div>
   );

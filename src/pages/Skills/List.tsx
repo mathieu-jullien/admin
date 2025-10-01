@@ -5,6 +5,7 @@ import { skillColumns } from '../../types/pages/skills';
 import type { Skill } from '../../types/pages/skills';
 import { skillService } from '../../services/skills';
 import { ApiException } from '../../types/api/errors';
+import { showSuccess, showError } from '../../utils/toast';
 
 export default function List() {
   const navigate = useNavigate();
@@ -52,8 +53,34 @@ export default function List() {
     navigate('/skills/create');
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/skills/${id}/edit`);
+  const handleEdit = (skill: Skill) => {
+    navigate(`/skills/${skill.id}/edit`);
+  };
+
+  const handleDelete = async (skill: Skill) => {
+    try {
+      await skillService.delete(skill.id);
+      showSuccess(`La compétence "${skill.name}" a été supprimée avec succès`);
+
+      // Reload skills list
+      const controller = new AbortController();
+      const response = await skillService.getAll(
+        {
+          page: currentPage,
+          limit: pageSize,
+        },
+        controller.signal
+      );
+      setSkills(response.member);
+    } catch (err) {
+      if (err instanceof ApiException) {
+        showError(err.message);
+      } else {
+        showError('Erreur lors de la suppression de la compétence');
+      }
+      console.error('Erreur:', err);
+      throw err;
+    }
   };
 
   if (error) {
@@ -80,8 +107,16 @@ export default function List() {
         title="Liste des compétences"
         pagination
         pageSize={pageSize}
-        onRowClick={skill => handleEdit(skill.id)}
         loading={loading}
+        actions={{
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+          editLabel: 'Éditer',
+          deleteLabel: 'Supprimer',
+          deleteConfirmTitle: 'Supprimer la compétence',
+          deleteConfirmMessage: skill =>
+            `Êtes-vous sûr de vouloir supprimer la compétence "${skill.name}" ?`,
+        }}
       />
     </div>
   );
