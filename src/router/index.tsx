@@ -4,6 +4,12 @@ import Home from '../pages/Home/Home';
 import ExperienceList from '../pages/Experience/List';
 import ExperienceCreate from '../pages/Experience/Create';
 import ExperienceEdit from '../pages/Experience/Edit';
+import SkillList from '../pages/Skills/List';
+import SkillCreate from '../pages/Skills/Create';
+import SkillEdit from '../pages/Skills/Edit';
+import EducationList from '../pages/Education/List';
+import EducationCreate from '../pages/Education/Create';
+import EducationEdit from '../pages/Education/Edit';
 import Login from '../pages/Auth/Login';
 import NotFound from '../pages/Error/NotFound';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
@@ -35,6 +41,40 @@ export const router = createBrowserRouter([
           {
             path: ':id/edit',
             element: <ExperienceEdit />,
+          },
+        ],
+      },
+      {
+        path: 'skills',
+        children: [
+          {
+            index: true,
+            element: <SkillList />,
+          },
+          {
+            path: 'create',
+            element: <SkillCreate />,
+          },
+          {
+            path: ':id/edit',
+            element: <SkillEdit />,
+          },
+        ],
+      },
+      {
+        path: 'formations',
+        children: [
+          {
+            index: true,
+            element: <EducationList />,
+          },
+          {
+            path: 'create',
+            element: <EducationCreate />,
+          },
+          {
+            path: ':id/edit',
+            element: <EducationEdit />,
           },
         ],
       },

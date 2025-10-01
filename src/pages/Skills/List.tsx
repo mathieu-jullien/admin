@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Table from '../../components/ui/Table/Table';
-import { experienceColumns } from '../../types/pages/experiences.tsx';
-import type { Experience } from '../../types/pages/experiences.tsx';
-import { experienceService } from '../../services/experiences';
+import { skillColumns } from '../../types/pages/skills';
+import type { Skill } from '../../types/pages/skills';
+import { skillService } from '../../services/skills';
 import { ApiException } from '../../types/api/errors';
 
 export default function List() {
   const navigate = useNavigate();
-  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const currentPage = 1;
   const pageSize = 10;
 
   useEffect(() => {
-    const loadExperiences = async () => {
+    const loadSkills = async () => {
       const controller = new AbortController();
 
       try {
         setLoading(true);
         setError(null);
 
-        const response = await experienceService.getAll(
+        const response = await skillService.getAll(
           {
             page: currentPage,
             limit: pageSize,
@@ -30,12 +30,12 @@ export default function List() {
           controller.signal
         );
 
-        setExperiences(response.member);
+        setSkills(response.member);
       } catch (err) {
         if (err instanceof ApiException) {
           setError(err.message);
         } else {
-          setError('Erreur lors du chargement des expériences');
+          setError('Erreur lors du chargement des compétences');
         }
         console.error('Erreur:', err);
       } finally {
@@ -45,15 +45,15 @@ export default function List() {
       return () => controller.abort();
     };
 
-    loadExperiences();
+    loadSkills();
   }, [currentPage]);
 
   const handleCreate = () => {
-    navigate('/experiences/create');
+    navigate('/skills/create');
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/experiences/${id}/edit`);
+    navigate(`/skills/${id}/edit`);
   };
 
   if (error) {
@@ -72,15 +72,15 @@ export default function List() {
         onClick={handleCreate}
         className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
       >
-        Ajouter une expérience
+        Ajouter une compétence
       </button>
       <Table
-        data={experiences}
-        columns={experienceColumns}
-        title="Liste des expériences"
+        data={skills}
+        columns={skillColumns}
+        title="Liste des compétences"
         pagination
         pageSize={pageSize}
-        onRowClick={experience => handleEdit(experience.id)}
+        onRowClick={skill => handleEdit(skill.id)}
         loading={loading}
       />
     </div>

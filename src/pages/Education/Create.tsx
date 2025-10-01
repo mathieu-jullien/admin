@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ExperienceForm from './components/ExperienceForm';
-import type { Experience } from '../../types/pages/experiences';
-import { experienceService } from '../../services/experiences';
+import EducationForm from './components/EducationForm';
+import type { Education } from '../../types/pages/education';
+import { educationService } from '../../services/education';
 import { ApiException } from '../../types/api/errors';
 
 export default function Create() {
@@ -11,14 +11,14 @@ export default function Create() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (
-    data: Omit<Experience, 'id' | 'dateCreated' | 'dateUpdated'>
+    data: Omit<Education, 'id' | 'dateCreated' | 'dateUpdated'>
   ) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      await experienceService.create(data);
-      navigate('/experiences');
+      await educationService.create(data);
+      navigate('/formations');
     } catch (err) {
       if (err instanceof ApiException) {
         setError(err.message);
@@ -32,7 +32,7 @@ export default function Create() {
   };
 
   const handleCancel = () => {
-    navigate('/experiences');
+    navigate('/formations');
   };
 
   return (
@@ -43,7 +43,7 @@ export default function Create() {
           <div className="py-6">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-900">
-                Ajouter une nouvelle expérience
+                Ajouter une nouvelle formation
               </h1>
               <button
                 onClick={handleCancel}
@@ -69,15 +69,14 @@ export default function Create() {
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">
-                Informations de l'expérience
+                Informations de la formation
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Remplissez les informations ci-dessous pour créer une nouvelle
-                expérience professionnelle.
+                Remplissez les informations de la formation à ajouter.
               </p>
             </div>
 
-            <ExperienceForm
+            <EducationForm
               onSubmit={handleSubmit}
               onCancel={handleCancel}
               isLoading={isLoading}

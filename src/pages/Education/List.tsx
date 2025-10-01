@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Table from '../../components/ui/Table/Table';
-import { experienceColumns } from '../../types/pages/experiences.tsx';
-import type { Experience } from '../../types/pages/experiences.tsx';
-import { experienceService } from '../../services/experiences';
+import { educationColumns } from '../../types/pages/education';
+import type { Education } from '../../types/pages/education';
+import { educationService } from '../../services/education';
 import { ApiException } from '../../types/api/errors';
 
 export default function List() {
   const navigate = useNavigate();
-  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [educations, setEducations] = useState<Education[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const currentPage = 1;
   const pageSize = 10;
 
   useEffect(() => {
-    const loadExperiences = async () => {
+    const loadEducations = async () => {
       const controller = new AbortController();
 
       try {
         setLoading(true);
         setError(null);
 
-        const response = await experienceService.getAll(
+        const response = await educationService.getAll(
           {
             page: currentPage,
             limit: pageSize,
@@ -30,12 +30,12 @@ export default function List() {
           controller.signal
         );
 
-        setExperiences(response.member);
+        setEducations(response.member);
       } catch (err) {
         if (err instanceof ApiException) {
           setError(err.message);
         } else {
-          setError('Erreur lors du chargement des expériences');
+          setError('Erreur lors du chargement des formations');
         }
         console.error('Erreur:', err);
       } finally {
@@ -45,15 +45,15 @@ export default function List() {
       return () => controller.abort();
     };
 
-    loadExperiences();
+    loadEducations();
   }, [currentPage]);
 
   const handleCreate = () => {
-    navigate('/experiences/create');
+    navigate('/formations/create');
   };
 
   const handleEdit = (id: number) => {
-    navigate(`/experiences/${id}/edit`);
+    navigate(`/formations/${id}/edit`);
   };
 
   if (error) {
@@ -72,15 +72,15 @@ export default function List() {
         onClick={handleCreate}
         className="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
       >
-        Ajouter une expérience
+        Ajouter une formation
       </button>
       <Table
-        data={experiences}
-        columns={experienceColumns}
-        title="Liste des expériences"
+        data={educations}
+        columns={educationColumns}
+        title="Liste des formations"
         pagination
         pageSize={pageSize}
-        onRowClick={experience => handleEdit(experience.id)}
+        onRowClick={education => handleEdit(education.id)}
         loading={loading}
       />
     </div>

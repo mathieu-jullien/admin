@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ExperienceForm from './components/ExperienceForm';
-import type { Experience } from '../../types/pages/experiences';
-import { experienceService } from '../../services/experiences';
+import SkillForm from './components/SkillForm';
+import type { Skill } from '../../types/pages/skills';
+import { skillService } from '../../services/skills';
 import { ApiException } from '../../types/api/errors';
 
 export default function Create() {
@@ -11,14 +11,14 @@ export default function Create() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (
-    data: Omit<Experience, 'id' | 'dateCreated' | 'dateUpdated'>
+    data: Omit<Skill, 'id' | 'dateCreated' | 'dateUpdated'>
   ) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      await experienceService.create(data);
-      navigate('/experiences');
+      await skillService.create(data);
+      navigate('/skills');
     } catch (err) {
       if (err instanceof ApiException) {
         setError(err.message);
@@ -32,18 +32,17 @@ export default function Create() {
   };
 
   const handleCancel = () => {
-    navigate('/experiences');
+    navigate('/skills');
   };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      {/* En-tête */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="py-6">
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-900">
-                Ajouter une nouvelle expérience
+                Ajouter une nouvelle compétence
               </h1>
               <button
                 onClick={handleCancel}
@@ -69,15 +68,14 @@ export default function Create() {
           <div className="bg-white shadow rounded-lg">
             <div className="px-6 py-4 border-b border-gray-200">
               <h2 className="text-lg font-medium text-gray-900">
-                Informations de l'expérience
+                Informations de la compétence
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Remplissez les informations ci-dessous pour créer une nouvelle
-                expérience professionnelle.
+                Remplissez le nom de la compétence à ajouter.
               </p>
             </div>
 
-            <ExperienceForm
+            <SkillForm
               onSubmit={handleSubmit}
               onCancel={handleCancel}
               isLoading={isLoading}

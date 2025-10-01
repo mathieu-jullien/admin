@@ -6,10 +6,6 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-/**
- * Component to protect routes that require authentication
- * Redirects to /auth if user is not authenticated
- */
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useAuth();
 
