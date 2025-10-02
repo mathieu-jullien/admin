@@ -37,7 +37,7 @@ export default function Login() {
     if (error) setError('');
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-amber-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 text-white">
       <div className="card max-w-md w-full">
         <h1 className="text-2xl font-bold text-center mb-6">Connexion</h1>
 
@@ -61,7 +61,7 @@ export default function Login() {
               name="username"
               onChange={e => handleChange('username', e.target.value)}
               value={formData.username}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
               placeholder="Votre identifiant"
               disabled={isLoading}
               required
@@ -81,7 +81,7 @@ export default function Login() {
               name="password"
               onChange={e => handleChange('password', e.target.value)}
               value={formData.password}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
               placeholder="********"
               disabled={isLoading}
               required
