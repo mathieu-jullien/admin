@@ -4,7 +4,7 @@ export interface Contact {
   email: string;
   subject?: string;
   message: string;
-  createdAt: string;
+  dateCreated: string;
   status?: 'new' | 'read' | 'answered';
 }
 
