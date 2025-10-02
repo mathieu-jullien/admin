@@ -51,4 +51,14 @@ export const endpoints = {
     patch: (id: number) => `/education/${id}`,
     delete: (id: number) => `/education/${id}`,
   },
+  contacts: {
+    list: (params?: ListParams) => `/contacts${buildQueryString(params)}`,
+    get: (id: number) => `/contacts/${id}`,
+    stats: () => '/contacts/stats/weekly',
+    patch: (id: number) => `/contacts/${id}`,
+  },
+  analytics: {
+    stats: (period?: string) =>
+      `/analytics/stats${period ? `?period=${period}` : ''}`,
+  },
 };

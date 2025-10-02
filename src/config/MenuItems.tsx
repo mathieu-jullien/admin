@@ -2,7 +2,7 @@ import type { MenuItem } from '../types/layout/menu/MenuItem';
 
 export const menuItems: MenuItem[] = [
   { label: 'Accueil', href: '/' },
-  { label: 'Dashboard', href: '/dashboard', soon: true },
+  { label: 'Dashboard', href: '/dashboard' },
   { label: 'Expériences', href: '/experiences' },
   { label: 'Compétences', href: '/skills' },
   { label: 'Formations', href: '/formations' },
