@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import { Mail } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { Mail } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import StatCard from '../../../components/ui/StatCard';
 import { contactService } from '../../../services/contacts';
-import type { ContactStats } from '../../../types/pages/contacts';
 import { ApiException } from '../../../types/api/errors';
+import type { ContactStats } from '../../../types/pages/contacts';
 
 export default function ContactsCard() {
   const [stats, setStats] = useState<ContactStats | null>(null);
@@ -77,7 +77,7 @@ export default function ContactsCard() {
                       {contact.name}
                     </p>
                     <time className="text-xs text-gray-500 flex-shrink-0">
-                      {format(new Date(contact.createdAt), 'dd MMM', {
+                      {format(new Date(contact.dateCreated), 'dd MMM', {
                         locale: fr,
                       })}
                     </time>
