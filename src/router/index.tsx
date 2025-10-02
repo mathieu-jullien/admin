@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../components/layout/Layout/Layout';
 import Home from '../pages/Home/Home';
+import Dashboard from '../pages/Dashboard';
 import ExperienceList from '../pages/Experience/List';
 import ExperienceCreate from '../pages/Experience/Create';
 import ExperienceEdit from '../pages/Experience/Edit';
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />,
       },
       {
         path: 'experiences',
