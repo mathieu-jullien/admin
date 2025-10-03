@@ -1,5 +1,5 @@
-import type { MenuItem } from '../../../types/layout/menu/MenuItem';
 import { Link, useLocation } from 'react-router-dom';
+import type { MenuItem } from '../../../types/layout/menu/MenuItem';
 
 interface MenuProps {
   menuItems: MenuItem[];
