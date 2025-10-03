@@ -17,20 +17,22 @@ export default function SkillSelector({
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
 
-  const filteredSkills = availableSkills.filter(
+  const filteredSkills = (availableSkills || []).filter(
     skill =>
       skill.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !selectedSkills.some(selected => selected.id === skill.id)
+      !(selectedSkills || []).some(selected => selected.id === skill.id)
   );
 
   const addSkill = (skill: Skill) => {
-    onSkillsChange([...selectedSkills, skill]);
+    onSkillsChange([...(selectedSkills || []), skill]);
     setSearchTerm('');
     setShowDropdown(false);
   };
 
   const removeSkill = (skillId: number) => {
-    onSkillsChange(selectedSkills.filter(skill => skill.id !== skillId));
+    onSkillsChange(
+      (selectedSkills || []).filter(skill => skill.id !== skillId)
+    );
   };
 
   const createNewSkill = () => {
@@ -45,20 +47,18 @@ export default function SkillSelector({
       dateUpdated: new Date().toISOString().split('T')[0],
     };
 
-    onSkillsChange([...selectedSkills, newSkill]);
+    onSkillsChange([...(selectedSkills || []), newSkill]);
     setSearchTerm('');
     setShowDropdown(false);
   };
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
-    setShowDropdown(value.length > 0);
+    setShowDropdown(true);
   };
 
   const handleSearchFocus = () => {
-    if (searchTerm.length > 0) {
-      setShowDropdown(true);
-    }
+    setShowDropdown(true);
   };
 
   const handleSearchBlur = () => {
@@ -69,13 +69,13 @@ export default function SkillSelector({
   return (
     <div className="space-y-4">
       {/* Compétences sélectionnées */}
-      {selectedSkills.length > 0 && (
+      {(selectedSkills || []).length > 0 && (
         <div>
           <h4 className="text-sm font-medium text-gray-700 mb-2">
             Compétences sélectionnées
           </h4>
           <div className="flex flex-wrap gap-2">
-            {selectedSkills.map(skill => (
+            {(selectedSkills || []).map(skill => (
               <span
                 key={skill.id}
                 className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800"
@@ -136,10 +136,13 @@ export default function SkillSelector({
           {/* Dropdown avec suggestions */}
           {showDropdown && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-              {filteredSkills.length > 0 && (
+              {/* Compétences filtrées */}
+              {filteredSkills.length > 0 ? (
                 <div>
                   <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide bg-gray-50">
-                    Compétences existantes
+                    {searchTerm.trim()
+                      ? 'Résultats'
+                      : 'Compétences disponibles'}
                   </div>
                   {filteredSkills.map(skill => (
                     <button
@@ -155,37 +158,29 @@ export default function SkillSelector({
                     </button>
                   ))}
                 </div>
-              )}
-
-              {/* Option pour créer une nouvelle compétence */}
-              {searchTerm.trim() &&
-                !availableSkills.some(
-                  skill => skill.name.toLowerCase() === searchTerm.toLowerCase()
-                ) && (
-                  <div>
-                    {filteredSkills.length > 0 && (
-                      <div className="border-t border-gray-200"></div>
-                    )}
-                    <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide bg-gray-50">
-                      Créer une nouvelle compétence
-                    </div>
-                    <button
-                      type="button"
-                      onClick={createNewSkill}
-                      className="w-full text-left px-3 py-2 hover:bg-green-50 focus:bg-green-50 focus:outline-none"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span>Créer "{searchTerm}"</span>
-                        <span className="text-xs text-green-600">Nouvelle</span>
-                      </div>
-                    </button>
+              ) : searchTerm.trim() ? (
+                /* Aucun résultat trouvé - proposer de créer */
+                <div>
+                  <div className="px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide bg-gray-50">
+                    Aucun résultat
                   </div>
-                )}
-
-              {/* Message si aucun résultat */}
-              {filteredSkills.length === 0 && !searchTerm.trim() && (
+                  <button
+                    type="button"
+                    onClick={createNewSkill}
+                    className="w-full text-left px-3 py-2 hover:bg-green-50 focus:bg-green-50 focus:outline-none"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>Créer "{searchTerm}"</span>
+                      <span className="text-xs text-green-600">Nouvelle</span>
+                    </div>
+                  </button>
+                </div>
+              ) : (
+                /* Champ vide */
                 <div className="px-3 py-4 text-center text-gray-500 text-sm">
-                  Commencez à taper pour rechercher des compétences
+                  {(availableSkills || []).length === 0
+                    ? 'Aucune compétence disponible'
+                    : 'Commencez à taper pour rechercher'}
                 </div>
               )}
             </div>
@@ -194,7 +189,7 @@ export default function SkillSelector({
       )}
 
       {/* Message d'état vide */}
-      {selectedSkills.length === 0 && disabled && (
+      {(selectedSkills || []).length === 0 && disabled && (
         <div className="border border-gray-300 rounded-md p-4 bg-gray-50">
           <p className="text-gray-500 text-sm text-center">
             Aucune compétence sélectionnée

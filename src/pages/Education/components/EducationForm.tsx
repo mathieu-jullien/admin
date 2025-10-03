@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import type { Education } from '../../../types/pages/education';
+import { useEffect, useState } from 'react';
+import SkillSelector from '../../../components/ui/SkillSelector';
+import { skillService } from '../../../services/skills/skillService';
+import type { Education, Skill } from '../../../types/pages/education';
+import type { CreateEducationDto } from '../../../services/education/types';
 import { formatDateForInput } from '../../../utils/date';
 
 interface EducationFormProps {
   initialData?: Partial<Education>;
-  onSubmit: (
-    data: Omit<Education, 'id' | 'dateCreated' | 'dateUpdated'>
-  ) => void;
+  onSubmit: (data: CreateEducationDto) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -23,11 +24,29 @@ export default function EducationForm({
     link: initialData?.link || '',
     location: initialData?.location || '',
     description: initialData?.description || '',
+    skills: initialData?.skills || [],
     dateStart: formatDateForInput(initialData?.dateStart) || '',
     dateEnd: formatDateForInput(initialData?.dateEnd) || '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [availableSkills, setAvailableSkills] = useState<Skill[]>([]);
+  const [isLoadingSkills, setIsLoadingSkills] = useState(false);
+
+  useEffect(() => {
+    const loadSkills = async () => {
+      setIsLoadingSkills(true);
+      try {
+        const response = await skillService.getAll({ page: 1, limit: 1000 });
+        setAvailableSkills(response.member);
+      } catch (error) {
+        console.error('Erreur chargement skills:', error);
+      } finally {
+        setIsLoadingSkills(false);
+      }
+    };
+    loadSkills();
+  }, []);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -41,15 +60,38 @@ export default function EducationForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const createNewSkills = async (skills: Skill[]): Promise<string[]> => {
+    const newSkills = skills.filter(s => s.id > 1000000000); // IDs temporaires
+    const existingSkills = skills.filter(s => s.id < 1000000000);
+
+    const createdSkills = await Promise.all(
+      newSkills.map(skill =>
+        skillService.create({
+          name: skill.name,
+          inProfile: skill.inProfile,
+          soft: skill.soft,
+        })
+      )
+    );
+
+    const allSkills = [...existingSkills, ...createdSkills];
+    return allSkills.map(skill => `/api/skills/${skill.id}`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
-      onSubmit(formData);
+      try {
+        const skills = await createNewSkills(formData.skills);
+        onSubmit({ ...formData, skills });
+      } catch (error) {
+        console.error('Erreur création skills:', error);
+      }
     }
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: string | Skill[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     // Effacer l'erreur si elle existe
     if (errors[field]) {
@@ -144,6 +186,16 @@ export default function EducationForm({
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Décrivez votre parcours, projets, spécialisation..."
             disabled={isLoading}
+          />
+        </div>
+
+        {/* Compétences */}
+        <div>
+          <SkillSelector
+            selectedSkills={formData.skills}
+            availableSkills={availableSkills}
+            onSkillsChange={skills => handleChange('skills', skills)}
+            disabled={isLoading || isLoadingSkills}
           />
         </div>
 
