@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import ExperienceForm from './components/ExperienceForm';
 import type { Experience } from '../../types/pages/experiences';
+import type { UpdateExperienceDto } from '../../services/experiences/types';
 import { experienceService } from '../../services/experiences';
 import { ApiException } from '../../types/api/errors';
 
@@ -53,9 +54,7 @@ export default function Edit() {
     loadExperience();
   }, [id]);
 
-  const handleSubmit = async (
-    data: Omit<Experience, 'id' | 'dateCreated' | 'dateUpdated'>
-  ) => {
+  const handleSubmit = async (data: UpdateExperienceDto) => {
     if (!experience) return;
 
     setIsSubmitting(true);

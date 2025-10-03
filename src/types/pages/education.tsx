@@ -37,19 +37,27 @@ export const educationColumns: TableColumn<Education>[] = [
     key: 'description',
     header: 'Description',
     sortable: true,
-    render: value => <span className="line-clamp-2">{value || ''}</span>,
+    render: value => (
+      <span className="line-clamp-2">{String(value || '')}</span>
+    ),
   },
   {
     key: 'link',
     header: 'Lien',
     sortable: true,
-    render: value => <span className="line-clamp-2">{value || ''}</span>,
+    render: value => (
+      <span className="line-clamp-2">{String(value || '')}</span>
+    ),
   },
   {
     key: 'skills',
     header: 'Compétences',
-    render: value =>
-      Array.isArray(value) ? value.map(skill => skill.name).join(', ') : '',
+    render: value => {
+      if (Array.isArray(value)) {
+        return value.map(skill => skill.name).join(', ');
+      }
+      return '';
+    },
   },
   {
     key: 'dateStart',

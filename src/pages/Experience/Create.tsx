@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ExperienceForm from './components/ExperienceForm';
-import type { Experience } from '../../types/pages/experiences';
 import { experienceService } from '../../services/experiences';
 import { ApiException } from '../../types/api/errors';
+import type { CreateExperienceDto } from '../../services/experiences/types';
 
 export default function Create() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (
-    data: Omit<Experience, 'id' | 'dateCreated' | 'dateUpdated'>
-  ) => {
+  const handleSubmit = async (data: CreateExperienceDto) => {
     setIsLoading(true);
     setError(null);
 
