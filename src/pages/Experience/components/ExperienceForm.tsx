@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import SkillSelector from '../../../components/ui/SkillSelector';
+import { skillService } from '../../../services/skills/skillService';
 import type { Experience, Skill } from '../../../types/pages/experiences';
+import type { CreateExperienceDto } from '../../../services/experiences/types';
 import { formatDateForInput } from '../../../utils/date';
 
 interface ExperienceFormProps {
   initialData?: Partial<Experience>;
-  onSubmit: (
-    data: Omit<Experience, 'id' | 'dateCreated' | 'dateUpdated'>
-  ) => void;
+  onSubmit: (data: CreateExperienceDto) => void;
   onCancel: () => void;
   isLoading?: boolean;
 }
@@ -28,6 +29,23 @@ export default function ExperienceForm({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [availableSkills, setAvailableSkills] = useState<Skill[]>([]);
+  const [isLoadingSkills, setIsLoadingSkills] = useState(false);
+
+  useEffect(() => {
+    const loadSkills = async () => {
+      setIsLoadingSkills(true);
+      try {
+        const response = await skillService.getAll({ page: 1, limit: 1000 });
+        setAvailableSkills(response.member);
+      } catch (error) {
+        console.error('Erreur chargement skills:', error);
+      } finally {
+        setIsLoadingSkills(false);
+      }
+    };
+    loadSkills();
+  }, []);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -44,11 +62,34 @@ export default function ExperienceForm({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const createNewSkills = async (skills: Skill[]): Promise<string[]> => {
+    const newSkills = skills.filter(s => s.id > 1000000000); // IDs temporaires
+    const existingSkills = skills.filter(s => s.id < 1000000000);
+
+    const createdSkills = await Promise.all(
+      newSkills.map(skill =>
+        skillService.create({
+          name: skill.name,
+          inProfile: skill.inProfile,
+          soft: skill.soft,
+        })
+      )
+    );
+
+    const allSkills = [...existingSkills, ...createdSkills];
+    return allSkills.map(skill => `/api/skills/${skill.id}`);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
-      onSubmit(formData);
+      try {
+        const skills = await createNewSkills(formData.skills);
+        onSubmit({ ...formData, skills });
+      } catch (error) {
+        console.error('Erreur création skills:', error);
+      }
     }
   };
 
@@ -58,33 +99,6 @@ export default function ExperienceForm({
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
-  };
-
-  const addSkill = () => {
-    const newSkill: Skill = {
-      id: Date.now(),
-      name: 'Nouvelle compétence',
-      inProfile: false,
-      soft: false,
-      dateCreated: new Date().toISOString().split('T')[0],
-      dateUpdated: new Date().toISOString().split('T')[0],
-    };
-    handleChange('skills', [...formData.skills, newSkill]);
-  };
-
-  const updateSkill = (index: number, name: string) => {
-    const updatedSkills = [...formData.skills];
-    updatedSkills[index] = {
-      ...updatedSkills[index],
-      name,
-      dateUpdated: new Date().toISOString().split('T')[0],
-    };
-    handleChange('skills', updatedSkills);
-  };
-
-  const removeSkill = (index: number) => {
-    const updatedSkills = formData.skills.filter((_, i) => i !== index);
-    handleChange('skills', updatedSkills);
   };
 
   return (
@@ -203,50 +217,12 @@ export default function ExperienceForm({
 
         {/* Compétences */}
         <div>
-          <div className="flex justify-between items-center mb-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Compétences
-            </label>
-            <button
-              type="button"
-              onClick={addSkill}
-              disabled={isLoading}
-              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-            >
-              Ajouter
-            </button>
-          </div>
-
-          <div className="space-y-2">
-            {formData.skills.map((skill, index) => (
-              <div key={skill.id} className="flex gap-2">
-                <input
-                  type="text"
-                  value={skill.name}
-                  onChange={e => updateSkill(index, e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Nom de la compétence"
-                  disabled={isLoading}
-                />
-                <button
-                  type="button"
-                  onClick={() => removeSkill(index)}
-                  disabled={isLoading}
-                  className="px-3 py-2 text-red-600 border border-red-300 rounded-md hover:bg-red-50 disabled:opacity-50"
-                >
-                  Supprimer
-                </button>
-              </div>
-            ))}
-
-            {formData.skills.length === 0 && (
-              <div className="border border-gray-300 rounded-md p-4 bg-gray-50">
-                <p className="text-gray-500 text-sm text-center">
-                  Aucune compétence ajoutée
-                </p>
-              </div>
-            )}
-          </div>
+          <SkillSelector
+            selectedSkills={formData.skills}
+            availableSkills={availableSkills}
+            onSkillsChange={skills => handleChange('skills', skills)}
+            disabled={isLoading || isLoadingSkills}
+          />
         </div>
 
         {/* Boutons d'action */}

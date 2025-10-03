@@ -25,3 +25,4 @@ dist-ssr
 DEPLOYMENT.md
 docker-compose.yml
 docker-compose.prod.yml
+feature/

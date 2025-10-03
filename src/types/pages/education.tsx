@@ -1,4 +1,7 @@
 import type { TableColumn } from '../ui/table/TableColumn';
+import type { Skill } from './skills';
+
+export type { Skill } from './skills';
 
 export interface Education {
   id: number;
@@ -7,6 +10,7 @@ export interface Education {
   link?: string;
   location?: string;
   description?: string;
+  skills: Skill[];
   dateStart: string;
   dateEnd: string;
   dateCreated: string;
@@ -40,6 +44,12 @@ export const educationColumns: TableColumn<Education>[] = [
     header: 'Lien',
     sortable: true,
     render: value => <span className="line-clamp-2">{value || ''}</span>,
+  },
+  {
+    key: 'skills',
+    header: 'Compétences',
+    render: value =>
+      Array.isArray(value) ? value.map(skill => skill.name).join(', ') : '',
   },
   {
     key: 'dateStart',
