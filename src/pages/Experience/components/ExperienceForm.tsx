@@ -64,6 +64,8 @@ export default function ExperienceForm({
     const newSkill: Skill = {
       id: Date.now(),
       name: 'Nouvelle compétence',
+      inProfile: false,
+      soft: false,
       dateCreated: new Date().toISOString().split('T')[0],
       dateUpdated: new Date().toISOString().split('T')[0],
     };

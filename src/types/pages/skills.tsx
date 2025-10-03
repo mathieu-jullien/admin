@@ -18,23 +18,25 @@ export const skillColumns: TableColumn<Skill>[] = [
   {
     key: 'inProfile',
     header: 'Dans le profil',
-    render: (value: boolean) => (value ? 'Oui ✅' : 'Non ❌'),
+    render: value => (value ? 'Oui ✅' : 'Non ❌'),
   },
   {
     key: 'soft',
     header: 'Soft Skill',
-    render: (value: boolean) => (value ? 'Oui ✅' : 'Non ❌'),
+    render: value => (value ? 'Oui ✅' : 'Non ❌'),
   },
   {
     key: 'dateCreated',
     header: 'Date de création',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
   {
     key: 'dateUpdated',
     header: 'Date de modification',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
 ];

@@ -36,37 +36,42 @@ export const experienceColumns: TableColumn<Experience>[] = [
     key: 'description',
     header: 'Description',
     sortable: true,
-    render: (value: string) => <span className="line-clamp-2">{value}</span>,
+    render: value => (
+      <span className="line-clamp-2">{String(value || '')}</span>
+    ),
   },
   {
     key: 'skills',
     header: 'Compétences',
-    render: (value: Skill[]) =>
-      value?.map(skill => skill.name).join(', ') || '',
+    render: value =>
+      Array.isArray(value) ? value.map(skill => skill.name).join(', ') : '',
   },
   {
     key: 'dateStart',
     header: 'Date de début',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
   {
     key: 'dateEnd',
     header: 'Date de fin',
-    render: (value: string) =>
-      value ? new Date(value).toLocaleDateString('fr-FR') : '-',
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '-',
     sortable: true,
   },
   {
     key: 'dateCreated',
     header: 'Date de création',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
   {
     key: 'dateUpdated',
     header: 'Date de Modification',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
 ];

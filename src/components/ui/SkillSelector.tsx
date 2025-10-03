@@ -39,6 +39,8 @@ export default function SkillSelector({
     const newSkill: Skill = {
       id: Date.now(), // ID temporaire
       name: searchTerm.trim(),
+      inProfile: false,
+      soft: false,
       dateCreated: new Date().toISOString().split('T')[0],
       dateUpdated: new Date().toISOString().split('T')[0],
     };

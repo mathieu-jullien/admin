@@ -87,7 +87,7 @@ export default function Table<T = Record<string, unknown>>({
   const handleDeleteConfirm = async () => {
     if (!deleteModal.row || !actions?.onDelete) return;
 
-    const rowId = (deleteModal.row as { id: number }).id;
+    const rowId = (deleteModal.row as unknown as { id: number }).id;
     setDeletingId(rowId);
 
     try {
@@ -214,7 +214,7 @@ export default function Table<T = Record<string, unknown>>({
               </tr>
             ) : (
               paginatedData.map((row, rowIndex) => {
-                const rowId = (row as { id: number }).id;
+                const rowId = (row as unknown as { id: number }).id;
                 const isDeleting = deletingId === rowId;
 
                 return (

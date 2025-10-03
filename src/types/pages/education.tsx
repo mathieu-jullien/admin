@@ -33,30 +33,33 @@ export const educationColumns: TableColumn<Education>[] = [
     key: 'description',
     header: 'Description',
     sortable: true,
-    render: (value: string) => <span className="line-clamp-2">{value}</span>,
+    render: value => <span className="line-clamp-2">{value || ''}</span>,
   },
   {
     key: 'link',
     header: 'Lien',
     sortable: true,
-    render: (value: string) => <span className="line-clamp-2">{value}</span>,
+    render: value => <span className="line-clamp-2">{value || ''}</span>,
   },
   {
     key: 'dateStart',
     header: 'Date de début',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
   {
     key: 'dateEnd',
     header: 'Date de fin',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
   {
     key: 'dateCreated',
     header: 'Date de création',
-    render: (value: string) => new Date(value).toLocaleDateString('fr-FR'),
+    render: value =>
+      value ? new Date(value as string).toLocaleDateString('fr-FR') : '',
     sortable: true,
   },
 ];
