@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import EducationForm from './components/EducationForm';
 import type { Education } from '../../types/pages/education';
+import type { UpdateEducationDto } from '../../services/education/types';
 import { educationService } from '../../services/education';
 import { ApiException } from '../../types/api/errors';
 
@@ -53,9 +54,7 @@ export default function Edit() {
     loadEducation();
   }, [id]);
 
-  const handleSubmit = async (
-    data: Omit<Education, 'id' | 'dateCreated' | 'dateUpdated'>
-  ) => {
+  const handleSubmit = async (data: UpdateEducationDto) => {
     if (!education) return;
 
     setIsSubmitting(true);

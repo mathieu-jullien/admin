@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EducationForm from './components/EducationForm';
-import type { Education } from '../../types/pages/education';
 import { educationService } from '../../services/education';
 import { ApiException } from '../../types/api/errors';
+import type { CreateEducationDto } from '../../services/education/types';
 
 export default function Create() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (
-    data: Omit<Education, 'id' | 'dateCreated' | 'dateUpdated'>
-  ) => {
+  const handleSubmit = async (data: CreateEducationDto) => {
     setIsLoading(true);
     setError(null);
 
