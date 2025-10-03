@@ -1,0 +1,132 @@
+name: Build and Deploy React Admin
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+  REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+  REGISTRY_PASS: ${{ secrets.REGISTRY_PASS }}
+  VITE_API_URL: ${{ secrets.VITE_API_URL_PROD }}
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint:check
+
+      - name: Check code formatting
+        run: npm run format:check
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ env.VITE_API_URL }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_URL }}
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASS }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_URL }}/homeland_admin
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+            VITE_API_URL=${{ env.VITE_API_URL }}
+            VITE_API_TIMEOUT=10000
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_DEPLOY_PRIVATE_KEY }}
+          SSH_REMOTE_HOSTNAME: ${{ secrets.SSH_REMOTE_HOSTNAME }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan $SSH_REMOTE_HOSTNAME >> ~/.ssh/known_hosts
+
+      - name: 🚀 Deploy on VPS
+        env:
+          SSH_REMOTE_HOSTNAME: ${{ secrets.SSH_REMOTE_HOSTNAME }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
+        run: |
+          ssh $SSH_USER@$SSH_REMOTE_HOSTNAME << 'EOF'
+            echo "Pull de l'image à jour du private registry"
+            docker image pull ${{ env.REGISTRY_URL }}/homeland_admin:main
+
+            echo "Force l'update du service homeland-admin (stack)"
+            docker service update homeland-admin_homeland_admin --image ${{ env.REGISTRY_URL }}/homeland_admin:main --force
+
+            echo "Clean des containers"
+            docker container prune --force
+
+            echo "Clean des images"
+            docker image prune --force
+
+            echo "✅ Déploiement terminé"
+          EOF
+
+      - name: Clean up SSH
+        if: always()
+        run: |
+          rm -f ~/.ssh/id_rsa
